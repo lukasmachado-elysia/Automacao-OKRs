@@ -2,7 +2,7 @@ import requests
 
 def printError(e):
     print('\n------------------------------------') 
-    print('Nao foi possível realizar a conexao!')
+    print('Nao foi possível realizar a operacao!')
     print('------------------------------------\n') 
 
     templateError = '!!! ---> Um erro do tipo: "{0}" ocorreu <--- !!!\nArgumentos:\n{1}'
