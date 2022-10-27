@@ -9,7 +9,7 @@ def printError(e):
     messageError = templateError.format(type(e).__name__,e.args)
     print(messageError)
 
-def requests_API_Orquestra(metodo='GET',urlAcesso="https://elysia.zeev.it",tipoAcesso="/api/2/assignments",head=str,payload=''):
+def requests_API_Orquestra(metodo='GET',urlAcesso="https://elysia.zeev.it",tipoAcesso="/api/2/assignments",head={},payload={}):
     '''
         Funcao
         ------
@@ -47,12 +47,15 @@ def requests_API_Orquestra(metodo='GET',urlAcesso="https://elysia.zeev.it",tipoA
     # verifica qual tipo de requisicao foi pedida
     try:
         if metodo == 'GET':
+            print('---> Tipo de requisicao: \'GET\'')
             req = requests.get(url=urlAcesso+tipoAcesso,headers=head,params=payload)
             return req
         elif metodo == 'POST':
-            req = requests.post(url=urlAcesso+tipoAcesso,headers=head,params={payload})
+            print('---> Tipo de requisicao: \'POST\'')
+            req = requests.post(url=urlAcesso+tipoAcesso,headers=head,params=payload)
             return req
         else: 
             raise NameError('Nenhum metodo valido foi passado. Passe os metodos POST ou GET.')
     except Exception as e:
+        print('funcoes')
         printError(e)
