@@ -47,11 +47,9 @@ def requests_API_Orquestra(metodo='GET',urlAcesso="https://elysia.zeev.it",tipoA
     # verifica qual tipo de requisicao foi pedida
     try:
         if metodo == 'GET':
-            print('---> Tipo de requisicao: \'GET\'')
             req = requests.get(url=urlAcesso+tipoAcesso,headers=head,params=payload)
             return req
         elif metodo == 'POST':
-            print('---> Tipo de requisicao: \'POST\'')
             req = requests.post(url=urlAcesso+tipoAcesso,headers=head,params=payload)
             return req
         else: 
