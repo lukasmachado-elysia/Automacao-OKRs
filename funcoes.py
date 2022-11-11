@@ -6,7 +6,7 @@ from flask import Flask, render_template
 from flask_mail import Mail, Message
 
 
-def printError(e):
+def printError(e, nomeLog:str='erros'):
     print('\n------------------------------------') 
     print('Nao foi possível realizar a operacao!')
     print('------------------------------------\n') 
@@ -14,6 +14,8 @@ def printError(e):
     templateError = '!!! ---> Um erro do tipo: "{0}" ocorreu <--- !!!\nArgumentos:\n{1}'
     messageError = templateError.format(type(e).__name__,e.args)
     print(messageError)
+    cria_log("Erro: ".format(e),"autOKRs")
+
 
 def requests_API_Orquestra(metodo='GET',urlAcesso="https://elysia.zeev.it",tipoAcesso="/api/2/assignments",head={},payload={}):
     '''
@@ -84,7 +86,6 @@ def cria_log(msgExecucoes:str,nomePrograma:str):
             bool : retorna `True` se o log foi criado com sucesso e retorna `False` em caso de excecao ou problema na criacao do arquivo.
     """
     try:
-        logMsg = '''-------------------------------------------\n------- LOG DE EXECUCAO DO PROGRAMA -------\n-------------------------------------------\nData e Hora: {0}\nLog:\n>> {1}\n-------------------------------------------\n\n'''.format(datetime.today().strftime("%d/%m/%Y %Hh:%Mm:%Ss"), msgExecucoes)
         nomePrograma = "teste"
         absPathFolder = os.getcwd() + "\\logsPrograma\\"
 
@@ -108,7 +109,7 @@ def cria_log(msgExecucoes:str,nomePrograma:str):
             # Arquivo nao existe, cria ele e alimenta
             print(">> Nao existe!")
             print(">> Criando arquivo...")
-
+            logMsg = '''-------------------------------------------\n------- LOG DE EXECUCAO DO PROGRAMA -------\n-------------------------------------------\nData e Hora: {0}\nLog:\n>>({0}): {1}\n-------------------------------------------\n\n'''.format(datetime.today().strftime("%d/%m/%Y %Hh:%Mm:%Ss"), msgExecucoes)
             with open(absPathFolder + nomeArquivo, 'w', encoding="utf-8") as file:
                 print(">> Escrevendo no arquivo...")
                 writeData = file.write(logMsg)
@@ -126,7 +127,7 @@ def cria_log(msgExecucoes:str,nomePrograma:str):
         else:
             # Arquivo ja existe, possivelmente uma nova execucao
             print(">> Arquivo existe!")
-
+            logMsg = ">>({0}): {1}\n".format(datetime.today().strftime("%d/%m/%Y %Hh:%Mm:%Ss"), msgExecucoes)
             with open(absPathFolder + nomeArquivo, 'a', encoding="utf-8") as file:
                 print(">> Escrevendo no arquivo...")
                 appendData = file.write(logMsg)

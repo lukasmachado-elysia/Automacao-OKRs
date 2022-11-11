@@ -1,8 +1,0 @@
--------------------------------------------
-------- LOG DE EXECUCAO DO PROGRAMA -------
--------------------------------------------
-Data e Hora: 10/11/2022 11h:11m:01s
-Log:
->> Erro ao realizar requisicao de solicitacoes no orquestra!
--------------------------------------------
-
