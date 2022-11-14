@@ -448,11 +448,27 @@ def salvar_DataFrame_Excel(df:pd.DataFrame) -> bool:
             dt1 = (datetime.today() - timedelta(days=7)).strftime("_%d_%m_%Y")
             dt2 = datetime.today().strftime("_%d_%m_%Y")
             nomeArquivo = "OKRs_CustomerSuccess" + dt1 + dt2 + ".xlsx"
-            # Salva arquivo
+
+            # Criacao da pasta
+            absPathFolder = os.getcwd() + "\\arquivosOkrs\\"
+
+            if not(os.path.exists(absPathFolder)):
+                # Pasta nao existe
+                print(">> Pasta excel: {} nao existe!".format(absPathFolder))
+                print(">> Criando pasta excel...")
+
+                os.mkdir(absPathFolder)
+                print(">> Pasta excel criada!")
+            else:
+                # Pasta existe
+                print(">> Pasta excel: {} existe!".format(absPathFolder))
+
+            # Salva arquivo     
             print(">> Salvando arquivo {}...".format(nomeArquivo))
-            df.to_excel("arquivosOkrs/" + nomeArquivo )
+            df.to_excel(absPathFolder + nomeArquivo )
+
             # Verifica se foi salvo
-            if not(os.path.exists("arquivosOkrs/" + nomeArquivo)):
+            if not(os.path.exists(absPathFolder + nomeArquivo)):
                 # Arquivo nao foi salvo por algum motivo
                 print(">> Nao foi possivel salvar o arquivo!")
                 funcoes.cria_log("Nao foi possivel salvar o arquivo...","autOKRs")
@@ -460,7 +476,7 @@ def salvar_DataFrame_Excel(df:pd.DataFrame) -> bool:
                 return '' , False
             else:
                 print(">> Arquivo salvo com sucesso!")
-                funcoes.cria_log("Arquivo salvo: {}...".format(nomeArquivo),"autOKRs")
+                funcoes.cria_log("Arquivo salvo em: {}...".format(absPathFolder + nomeArquivo),"autOKRs")
                 print(">> Fim!")
                 return nomeArquivo, True
         else:
@@ -508,7 +524,7 @@ def main() -> None:
                         'CONTATOS EM ABERTO - CS2', 'CONTATOS EFETIVOS - CS2', 'CONTATOS ATRASADOS - CS2',
                         'Nº DE CLIENTES NO ACOMPANHAMENTO PERSONALIZADO',
                         'ENVIOS DE DOCUMENTOS PENDENTES', 'ENVIOS DE DOCUMENTOS REALIZADOS', 'ENVIOS DE DOCUMENTOS ATRASADOS',
-                        'ENVIOS DE LAYOUT PENDENTE', 'ENVIOS DE LAYOUT REALIZADOS', 'ENVIOS DE LAYOUT ATRASADOS']
+                        'ENVIOS DE LAYOUT PENDENTES', 'ENVIOS DE LAYOUT REALIZADOS', 'ENVIOS DE LAYOUT ATRASADOS']
             print(">> Montando dataframe...")
             contagemDF = pd.DataFrame(listContagens, index=listIndex, columns=['Contagem'])
 

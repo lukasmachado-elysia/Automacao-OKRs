@@ -86,7 +86,7 @@ def cria_log(msgExecucoes:str,nomePrograma:str):
             bool : retorna `True` se o log foi criado com sucesso e retorna `False` em caso de excecao ou problema na criacao do arquivo.
     """
     try:
-        nomePrograma = "teste"
+        nomePrograma = nomePrograma
         absPathFolder = os.getcwd() + "\\logsPrograma\\"
 
         # Criacao da pasta
