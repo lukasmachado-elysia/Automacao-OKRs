@@ -238,7 +238,7 @@ def instances_Report_Orquestra(userToken:str, showFinishedInstanceTasks:bool=Tru
                 "showFinishedInstanceTasks": showFinishedInstanceTasks, 
                 "showPendingInstanceTasks": showPendingInstanceTasks,
                 "active": activeInstances}
-
+                
         # Filtro de ID para solicitacoes especificas
         if flowId != '': 
             f['flowId'] = flowId
