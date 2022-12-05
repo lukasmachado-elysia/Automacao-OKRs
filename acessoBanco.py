@@ -1,9 +1,8 @@
-from ast import Str
 from sqlite3 import Cursor
 import pyodbc
 
 # faz a conexao com o SQL Server e consulta a um banco de dados 
-def conexaoBanco(server=Str,
+def conexaoBanco(server=str,
                     user=str, 
                     password=str, 
                     dataBase=str):
@@ -66,4 +65,16 @@ def conexaoBanco(server=Str,
         print(messageError)
 
         return messageError
-    
+
+
+
+conn = conexaoBanco(server='datasheets.cipnvcm3pv2h.us-east-1.rds.amazonaws.com,9856', user='elysia', password='96by&cN43dgVC^b-9MsN', dataBase='elysiaDB')
+
+
+cursor = conn.cursor()
+cursor.execute("select * from vendedores;")
+column = cursor.fetchone()
+
+while column:
+    print(column[1])
+    column = cursor.fetchone()

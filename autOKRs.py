@@ -494,7 +494,16 @@ def main() -> None:
     # Para o email
     dt1 = (datetime.today() - timedelta(days=7)).strftime("%d_%m_%Y")
     dt2 = datetime.today().strftime("%d_%m_%Y")
-    enviarPara = ["raiulin.borges@elysia.com.br","lukas.machado@elysia.com.br"] 
+    
+    # e-mails
+    fileEmails = os.getcwd() + "\\emails.txt"
+    if not(fileEmails):
+        enviarPara = ["raiulin.borges@elysia.com.br","lukas.machado@elysia.com.br"]
+    else:
+        with open(os.getcwd() + "\\emails.txt", "r") as f:
+            line = str(f.read())
+            print(line.rsplit("\n"))
+    
     msg = "Período de {0} até {1}.".format(dt1.replace('_','/'), dt2.replace('_','/'))
     assuntoMsg = "Contagem OKRs Customer Success - Periodo: {0} até {1}.".format(dt1.replace('_','/'), dt2.replace('_','/'))
 
