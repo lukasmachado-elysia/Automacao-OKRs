@@ -8,7 +8,7 @@ import os
 funcoes.cria_log("Automacao OKRs v1.0","autOKRs")
 
 # Variaveis globais
-tks = ["HihrPwM6iplpMc20YafyI0X20hYBwMJjn9O5b3uRXLc%3D","NHvW6AeyLM3HFKp1HwXQIbDbGVdDOyMhvbyHgEoZY57S4pEFqdDDKy1R%2FVQHplHm","UVzI3W1fv8mAK28sWaTc%2BOlAefhF1q26WWTfaOmb%2BSY6F1b2IE43cgRMrafYMySh","oAlfna7l2QNiS6nZo4oIQSQCpNo5XX9iydYqEGfMVkDVz8fBG2Vl6bW9lChTtGtP", "vcMSbDWqyMNu8fcVLol8l0dZ0DZhinIFKyydHCBSAb%2B5RloWjteXNY9345MIcbUQ"]
+tks = ["HihrPwM6iplpMc20YafyI0X20hYBwMJjn9O5b3uRXLc%3D","NHvW6AeyLM3HFKp1HwXQIbDbGVdDOyMhvbyHgEoZY57S4pEFqdDDKy1R%2FVQHplHm","UVzI3W1fv8mAK28sWaTc%2BOlAefhF1q26WWTfaOmb%2BSY6F1b2IE43cgRMrafYMySh","oAlfna7l2QNiS6nZo4oIQSQCpNo5XX9iydYqEGfMVkDVz8fBG2Vl6bW9lChTtGtP", "vcMSbDWqyMNu8fcVLol8l0dZ0DZhinIFKyydHCBSAb%2B5RloWjteXNY9345MIcbUQ","MDV32bLEdZpNEyXHnlSBwvhI%2BtjOI3txH%2Bca94cvMHg%3D"]
 metodo = "GET"
 url = "https://elysia.zeev.it"
 tipoUrl = "/api/2/assignments"
@@ -396,7 +396,7 @@ def contagem_fluxo_personalizado(instancesDataFrame:pd.DataFrame) -> list:
         funcoes.printError(e,"autOKRs")
         return [-1]
 
-def contagem_layouts_documentos(dataFrame:pd.DataFrame,instancesDataFrame:pd.DataFrame) -> list:
+def contagem_layouts_documentos(dataFrame:pd.DataFrame,instancesDataFrame:pd.DataFrame, instancesReportNotActive:pd.DataFrame) -> list:
     '''
         Funcao
         ------
@@ -423,7 +423,9 @@ def contagem_layouts_documentos(dataFrame:pd.DataFrame,instancesDataFrame:pd.Dat
         envLayout = df.loc[(df['requestName'] == 'Projeto  v. 20') & (df['taskName'] == 'Baixar Layout e apresentar ao cliente')]
         contEnvLayoutPendentes = len(envLayout)
         # Envio de Layout Realizados - Contagem por Períodos
-        contEnvLayoutRealizados = contagem_Instancias_Orquestra('projeto v.20', 'baixar layout', periodo1, periodo2, instancesDataFrame)
+        contEnvLayoutRealizadosActive = contagem_Instancias_Orquestra('projeto v.20', 'baixar layout', periodo1, periodo2, instancesDataFrame)
+        contEnvLayoutRealizadosNotActive = contagem_Instancias_Orquestra('projeto v.20', 'baixar layout', periodo1, periodo2, instancesReportNotActive)
+        contEnvLayoutRealizados = contEnvLayoutRealizadosActive + contEnvLayoutRealizadosNotActive
         # Envio de Layout Atrasados
         contEnvLayoutAtrasadas = len(envLayout[(envLayout['taskName'] == 'Baixar Layout e apresentar ao cliente') & (envLayout['taskAtrasada'] == True)])
 
@@ -431,7 +433,9 @@ def contagem_layouts_documentos(dataFrame:pd.DataFrame,instancesDataFrame:pd.Dat
         envDoc = df.loc[(df['requestName'] == 'Projeto  v. 20') & (df['taskName'] == 'Entregar Documentação ao Cliente')]
         contEnvDocPendentes = len(envDoc)
         # Envio de Documentos Realizados - Contagem por Períodos
-        contEnvDocRealizados = contagem_Instancias_Orquestra('projeto v.20','entregar documentação', periodo1, periodo2, instancesDataFrame)
+        contEnvDocRealizadosActive = contagem_Instancias_Orquestra('projeto v.20','entregar documentação', periodo1, periodo2, instancesDataFrame)
+        contEnvDocRealizadosNotActive = contagem_Instancias_Orquestra('projeto v.20','entregar documentação', periodo1, periodo2, instancesReportNotActive)
+        contEnvDocRealizados = contEnvDocRealizadosActive + contEnvDocRealizadosNotActive
         # Envio de Documentos Atrasados 
         contEnvDocAtrasados = len(envDoc.loc[envDoc['taskAtrasada'] == True])
         funcoes.cria_log("Contagem de Layouts e Documentos concluida com sucesso...","autOKRs")
@@ -498,11 +502,13 @@ def main() -> None:
     # e-mails
     fileEmails = os.getcwd() + "\\emails.txt"
     if not(fileEmails):
+        funcoes.cria_log("emails.txt não existe!","autOKRs")
         enviarPara = ["raiulin.borges@elysia.com.br","lukas.machado@elysia.com.br"]
     else:
         with open(os.getcwd() + "\\emails.txt", "r") as f:
             line = str(f.read())
-            print(line.rsplit("\n"))
+            funcoes.cria_log("emails.txt existe!","autOKRs")
+            enviarPara = line.rsplit("\n")
     
     msg = "Período de {0} até {1}.".format(dt1.replace('_','/'), dt2.replace('_','/'))
     assuntoMsg = "Contagem OKRs Customer Success - Periodo: {0} até {1}.".format(dt1.replace('_','/'), dt2.replace('_','/'))
@@ -518,12 +524,13 @@ def main() -> None:
         # Requisicao com dados de instancias
         instancesReport = instances_Report_Orquestra('enb4iHROSDegvkiZv17Fxw%2BkQ7q7Zidu1PKalcpC4o4%3D', True, False, activeInstances=True)
         instancesReportCloseDegs = instances_Report_Orquestra("enb4iHROSDegvkiZv17Fxw%2BkQ7q7Zidu1PKalcpC4o4%3D", True, False, False, False, 255)
-        
+        instancesReportNotActive = instances_Report_Orquestra('enb4iHROSDegvkiZv17Fxw%2BkQ7q7Zidu1PKalcpC4o4%3D', True, False, activeInstances=False, flowId=221)
+
         # Confere retorno das requisicoes
-        if not(instancesReport.empty | instancesReportCloseDegs.empty):
+        if not(instancesReport.empty | instancesReportCloseDegs.empty | instancesReportNotActive.empty):
             print(">> Requisicoes realizadas com sucesso!")
             print(">> Realizando contagens...")
-            layouts, docs = contagem_layouts_documentos(df, instancesReport)
+            layouts, docs = contagem_layouts_documentos(df, instancesReport, instancesReportNotActive)
             contagemCS1 = contagem_CS1(df)
             contagemCS2 = contagem_CS2(df,instancesReport, instancesReportCloseDegs)
             contagemNormal = contagem_fluxo_personalizado(instancesReport)

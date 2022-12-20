@@ -1,0 +1,8 @@
+arquivosOkrs
+__pycache__
+build
+dist
+logsPrograma
+.spec
+autOKRs.spec
+autOKRs.zip
